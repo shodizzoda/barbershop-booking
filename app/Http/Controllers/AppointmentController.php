@@ -46,4 +46,31 @@ class AppointmentController extends Controller
         ], 201);
 
     }
+
+    public function index(Request $request)
+    {
+        $user = $request->user();
+
+        $appointment = $this->appointmentService->getAppointmentForUser($user);
+
+        return response()->json([
+            'status' => 'success',
+            'count'  => $appointment->count(),
+            'data'   => $appointment
+        ]);
+    }
+
+    public function cancel(Request $request, $id)
+    {
+        $user = $request->user();
+
+
+        $cancelledAppointment = $this->appointmentService->cancelAppointment($id, $user);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Запись успешно отменена',
+            'data'   => $cancelledAppointment
+        ]);
+    }
 }
