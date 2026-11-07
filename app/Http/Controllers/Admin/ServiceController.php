@@ -47,16 +47,44 @@ class ServiceController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(ServiceStoreRequest $request, string $id)
     {
-        //
+        $data = $request->validated();
+
+        $item = Service::find($id);
+
+        if (!isset($item)) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => "Услуга с ID - {$id} не найдена",
+            ], 404);
+        }
+
+        $item->update($data);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Услуга изменена',
+            'service' => $item
+        ]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
-        //
+        $item = Service::find($id);
+
+        if (!isset($item)) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => "Услуга с ID - {$id} не найдена",
+            ], 404);
+        }
+
+        $item->delete();
+
+        return response()->json([
+            'status' => 'success',
+            'message'=> "Услуга с ID - {$id} была удалена",
+        ], 200);
     }
 }
